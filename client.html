@@ -6,14 +6,21 @@
         <title>Document</title>
     </head>
     <body>
-        <input type="text" id="input" placeholder="Your msg..." />
-        <button onclick="message(document.getElementById('input').value)">Send</button>
         <div id="message"></div>
+        <form>
+            <input type="text" id="input" placeholder="Your msg..." />
+            <button onclick="message(document.getElementById('input').value)">Send</button>
+        </form>
         <script>
             function poll(){
                 fetch("/poll")
                 .then((res)=>res.text())
-                .then((message)=>(document.getElementById("message").innerHTML += `${message} <br>`))
+                .then((message)=>(
+                    document.getElementById("message").innerHTML += 
+                    `<div class="message-row ${isMine?'mine':'theirs'}">
+                        <div class="bubble">${message}</div>
+                     </div>`
+                    ))
                 .finally(()=>poll());
             }
             function message(message){
@@ -24,5 +31,42 @@
             }
             poll();
         </script>
+        <style>
+            *{
+                box-sizing: border-box;
+            }
+            body{
+                background-color: #222;
+                color: #fff;
+            }
+            form{
+                position:fixed;
+                bottom:0;
+                left:0;
+                right:0;
+                padding:20px;
+            }
+            input{
+                border:1px solid #555;
+                background-color: transparent;
+                width:100%;
+                padding:10px;
+                border-radius:20px;
+                color:#fff;
+            }
+            .bubble{
+                border-radius: 20px;
+                background-color: #444;
+                margin:4px;
+                padding: 5px 10px;
+                display: inline-block
+            }
+            .message-row.mine{
+                text-align:right;
+            }
+            .message-row.mine .bubble{
+                background-color: #07c;
+            }
+        </style>
     </body>
 </html>
